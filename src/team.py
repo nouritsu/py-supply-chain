@@ -5,7 +5,7 @@ class Team:
     def place_order(self, count: int):
         ...
 
-    def fulfill_order(self, number):
+    def fulfill_order(self, number: int):
         ...
 
     def set_next(self, next):
