@@ -3,7 +3,12 @@ from printer import *
 from command import Command
 from customer import Customer
 from retailer import Retailer
+from wholesaler import Wholesaler
+from company import Company
 from team import Team
+from textual.app import App, ComposeResult
+from textual.widgets import Header, Footer, Static
+from textual.reactive import reactive
 
 
 def main():
@@ -12,12 +17,20 @@ def main():
 
     customer = Customer()
     retailer = Retailer()
+    wholesaler = Wholesaler()
+    company = Company()
 
     customer.set_next(retailer)
     customer.set_prev(None)
 
-    retailer.set_next(None)
+    retailer.set_next(wholesaler)
     retailer.set_prev(customer)
+
+    wholesaler.set_next(company)
+    wholesaler.set_prev(retailer)
+
+    company.set_next(None)
+    company.set_prev(wholesaler)
 
     turns = int(sys.argv[1])
     while True:
@@ -31,7 +44,15 @@ def main():
         print(retailer)
         handle_turn(retailer)
         print(retailer)
+        print(wholesaler)
+        handle_turn(wholesaler)
+        print(wholesaler)
+        print(company)
+        handle_turn(company)
+        print(company)
 
+        customer.update()
+        retailer.update()
         turns -= 1
 
 
@@ -45,15 +66,10 @@ def handle_turn(player: Team):
                 if cmd.arg == -1:
                     pwarning(f"Invalid argument for {cmd.name} : {cmd.arg}")
                     continue
-                # if isinstance(player, Company):
-                #     pwarning("Cannot place orders as a company.")
                 player.place_order(cmd.arg)
             case "fulfill":
                 if cmd.arg == -1:
                     pwarning(f"Invalid argument for {cmd.name} : {cmd.arg}")
-                    continue
-                if isinstance(player, Customer):
-                    pwarning(f"Cannot fulfill order as customer.")
                     continue
                 player.fulfill_order(cmd.arg)
             case "produce":

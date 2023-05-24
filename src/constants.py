@@ -1,0 +1,3 @@
+ORDER_ID_MIN = 1
+ORDER_ID_MAX = 5
+DELIVERY_TIME = 3  # weeks
