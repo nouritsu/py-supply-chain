@@ -8,13 +8,16 @@ class Team:
         self.recieved_orders = {}
         self.placed_orders = {}
         self.fulfilled_orders = {}
+        self.production = 1
         self.stock = 0
         self.round = 1
 
     def update(self):
         self.round += 1
+        self.stock += self.production
         for k, v in self.fulfilled_orders.items():
             if v == self.round:
+                self.prev.stock += self.prev.placed_orders[k]
                 del self.prev.placed_orders[k]
 
     def place_order(self, count: int):
@@ -22,15 +25,15 @@ class Team:
         self.placed_orders[id] = count
         self.next.recieved_orders[id] = count
 
-    def fulfill_order(self, number: int):
+    def fulfill_order(self, number: int):  # TODO: Add stock decrement
         if number in self.recieved_orders:
             self.fulfilled_orders[number] = self.round + DELIVERY_TIME
             del self.recieved_orders[number]
         else:
             pwarning(f"Cannot fulfill nonexistent order: {number}")
 
-    def produce(self, count: int):
-        self.stock += count
+    def set_production(self, count: int):
+        self.production = count
 
     def set_next(self, next):
         self.next = next
