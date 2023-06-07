@@ -1,25 +1,27 @@
 from team import Team
-from random import randint
-from printer import pwarning
+from constants import WHOLESALER_INIT_STOCK
+from result import Result
 
 
 class Wholesaler(Team):
     def __init__(self):
         super().__init__()
         self.production = -1
+        self.stock = WHOLESALER_INIT_STOCK
 
     def update(self):
         self.round += 1
         for k, v in self.fulfilled_orders.items():
             if v == self.round:
+                self.prev.stock += self.prev.placed_orders[k]
                 del self.prev.placed_orders[k]
 
-    def __str__(self):
-        s = "WHOLESALER\n"
-        s += f"Recieved Orders: {len(self.placed_orders)}\n"
-        for k, v in self.recieved_orders.items():
-            s += f"\tOrder {str(k).rjust(4, '0')} of {v} items\n"
-        s += f"Placed Orders: {len(self.placed_orders)}\n"
-        for k, v in self.placed_orders.items():
-            s += f"\tOrder {str(k).rjust(4, '0')} of {v} items\n"
-        return s
+    def set_production(self, count: int) -> Result:
+        r = Result()
+        r._set_err("Cannot set production as a Retailer.")
+        return r
+
+    def stats(self) -> dict:
+        d = super().stats()
+        d["role"] = "Wholesaler"
+        return d

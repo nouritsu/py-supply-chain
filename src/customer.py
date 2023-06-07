@@ -1,23 +1,30 @@
 from team import Team
-from random import randint
-from printer import pwarning
+from result import Result
 
 
 class Customer(Team):
     def __init__(self):
         super().__init__()
         self.recieved_orders = None
+        self.fulfilled_orders = None
         self.stock = -1
 
     def fulfill_order(self, number):
-        pwarning("Customers cannot fulfill orders.")
+        r = Result()
+        r._set_err("Cannot fulfill orders as Customer.")
+        return r
 
-    def update(self):  # customers do not fulfill orders, hence dont need to be updated
+    def update(self):  # Customers do not need to be updated
         ...
 
-    def __str__(self):
-        s = "CUSTOMER\n"
-        s += f"Placed Orders: {len(self.placed_orders)}\n"
-        for k, v in self.placed_orders.items():
-            s += f"\tOrder {str(k).rjust(4, '0')} of {v} items\n"
-        return s
+    def set_production(self, count: int) -> Result:
+        r = Result()
+        r._set_err("Cannot set production as a Customer.")
+        return r
+
+    def stats(self) -> dict:
+        d = {}
+        d["role"] = "Customer"
+        d["placed-orders"] = self.placed_orders
+        d["round"] = self.round
+        return d
