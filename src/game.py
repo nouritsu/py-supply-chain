@@ -66,10 +66,7 @@ class Game:
 
                 case "next":
                     self.__update()
-                    self.customer.update()
-                    self.retailer.update()
-                    self.wholesaler.update()
-                    self.company.update()
+                    self.current.update()
                     if self.finished():
                         return Result()._set_err("Cannot end turn, game is over.")
                     if self.current.next:

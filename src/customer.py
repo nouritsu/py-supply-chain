@@ -15,7 +15,7 @@ class Customer(Team):
         return r
 
     def update(self):  # Customers do not need to be updated
-        ...
+        self.round += 1
 
     def set_production(self, count: int) -> Result:
         r = Result()
