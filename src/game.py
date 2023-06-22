@@ -44,6 +44,7 @@ class Game:
         self.weekly_stock["Wholesaler"] = []
         self.weekly_stock["Company"] = []
 
+    # Execute a command, returns an error message if unsucessful
     def execute(self, command: str) -> Result:
         r = Result()
         c = Command(command)
@@ -64,7 +65,7 @@ class Game:
                     r = self.set_production(c.arg)
 
                 case "next":
-                    self.update()
+                    self.__update()
                     self.customer.update()
                     self.retailer.update()
                     self.wholesaler.update()
@@ -91,10 +92,15 @@ class Game:
             r._set_ok = self.current.stats()
         return r
 
+    # Returns true if game is over (use in main loop condition)
     def finished(self):
         return self.round == self.turns
 
-    def update(self):
+    # Get week by week stock count of each team, use after game end
+    def get_stats(self):
+        return self.weekly_stock
+
+    def __update(self):
         self.weekly_stock["Retailer"].append(self.retailer.stock)
         self.weekly_stock["Wholesaler"].append(self.wholesaler.stock)
         self.weekly_stock["Company"].append(self.company.stock)
