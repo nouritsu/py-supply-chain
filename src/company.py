@@ -18,7 +18,7 @@ class Company(Team):
         self.round += 1
         self.stock += self.production  # Company only
         for k, v in self.fulfilled_orders.items():
-            if v == self.round:
+            if v["week"] == self.round:
                 self.prev.stock += self.prev.placed_orders[k]
                 del self.prev.placed_orders[k]
 

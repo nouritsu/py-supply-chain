@@ -12,7 +12,7 @@ class Retailer(Team):
     def update(self):
         self.round += 1
         for k, v in self.fulfilled_orders.items():
-            if v == self.round:
+            if v["week"] == self.round:
                 del self.prev.placed_orders[k]
 
     def set_production(self, count: int) -> Result:

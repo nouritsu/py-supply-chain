@@ -24,7 +24,10 @@ class Team:
     def fulfill_order(self, number: int) -> Result:
         r = Result()
         if number in self.recieved_orders:
-            self.fulfilled_orders[number] = self.round + DELIVERY_TIME
+            self.fulfilled_orders[number] = {
+                "count": self.recieved_orders[number],
+                "week": self.round + DELIVERY_TIME,
+            }
             self.stock -= self.recieved_orders[number]
             del self.recieved_orders[number]
             r._set_ok(f"Fulfilled order number {number}")
@@ -47,7 +50,7 @@ class Team:
     def update(self):
         self.round += 1
         for k, v in self.fulfilled_orders.items():
-            if v == self.round:
+            if v["week"] == self.round:
                 self.prev.stock += self.prev.placed_orders[k]
                 del self.prev.placed_orders[k]
 
