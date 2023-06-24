@@ -1,9 +1,12 @@
 import flet as ft
+import time
 from game import Game
 
 def main(page: ft.Page):
     page.title = "Py Supply Chain"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.window_height = 675
+    page.window_width = 440
 
     GAME = Game(2)
     role = ft.Text(size=20)
@@ -12,7 +15,6 @@ def main(page: ft.Page):
     orders_received = ft.Column()
     orders_fulfilled = ft.Column()
     role_stats = ft.Text("", size=16)
-    command = ""
 
     def init():
         role.value = "Customer"
@@ -25,17 +27,18 @@ def main(page: ft.Page):
         return str(num)
 
     def command_submit(e: ft.ControlEvent):
-        nonlocal GAME, command, role, game_round, orders_placed, orders_received, orders_fulfilled, role_stats
+        nonlocal GAME
 
         command = e.control.value
-        reslut = GAME.execute(command)
+        result = GAME.execute(command)
+        command_textfield.error_text = ""
         print(command)
 
-        if reslut.is_err():
-            print(reslut.err())
-            command_textfield.error_text = reslut.err()
+        if result.is_err():
+            print(result.err())
+            command_textfield.error_text = result.err()
 
-            if reslut.err() == "Exit":
+            if result.err() == "Exit":
                 raise SystemExit from None
             
         stats = GAME.current.stats()
@@ -49,21 +52,23 @@ def main(page: ft.Page):
             for k, v in orders.items():
                 if type(v) == dict:
                     v = f"{v['count']} round {v['week']}"
-                row = ft.Text(f"{to_num_str(k, 4)}×{to_num_str(v, 2)}")
+                row = ft.Text(f"{to_num_str(k, 4)}×{to_num_str(v, 2)}", size=15)
                 rows.append(row)
 
             column.controls = rows
 
         if role.value != stats["role"]:
             role.value = stats["role"]
-            orders_placed.controls, orders_received.controls, orders_fulfilled.controls = [], [], []
+            orders_placed.controls = []
+            orders_received.controls = []
+            orders_fulfilled.controls = []
     
         prod_stats = stats["production"] if "production" in stats else "NA"
         stock_stats = stats["stock"] if "stock" in stats else "NA"
         role_stats.value = f"Production: {prod_stats}  |  Stock: {stock_stats}"
 
         update_orders("placed-orders", orders_placed)
-        update_orders("recieved-orders", orders_received)
+        update_orders("received-orders", orders_received)
         update_orders("fulfilled-orders", orders_fulfilled)
 
         game_round.value = stats["round"]
@@ -99,15 +104,24 @@ def main(page: ft.Page):
 
             ft.Row([
                 ft.Column([
-                    ft.Row([ft.Icon(ft.icons.SHOPPING_CART_ROUNDED), ft.Text("PLACED")]),
+                    ft.Row([
+                        ft.Icon(ft.icons.SHOPPING_CART_ROUNDED),
+                        ft.Text("PLACED", weight=ft.FontWeight.W_600)
+                        ]),
                     orders_placed
                 ], ),
                 ft.Column([
-                    ft.Row([ft.Icon(ft.icons.INVENTORY_2_ROUNDED), ft.Text("RECEIVED")]),
+                    ft.Row([
+                        ft.Icon(ft.icons.INVENTORY_2_ROUNDED),
+                        ft.Text("RECEIVED", weight=ft.FontWeight.W_600)
+                        ]),
                     orders_received
                 ]),
                 ft.Column([
-                    ft.Row([ft.Icon(ft.icons.INVENTORY_ROUNDED), ft.Text("FULFILLED")]),
+                    ft.Row([
+                        ft.Icon(ft.icons.INVENTORY_ROUNDED),
+                        ft.Text("FULFILLED", weight=ft.FontWeight.W_600)
+                        ]),
                     orders_fulfilled
                 ]),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, height=page.height/2.5),

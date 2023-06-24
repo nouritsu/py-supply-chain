@@ -5,7 +5,7 @@ from result import Result
 class Customer(Team):
     def __init__(self):
         super().__init__()
-        self.recieved_orders = None
+        self.received_orders = None
         self.fulfilled_orders = None
         self.stock = -1
 
