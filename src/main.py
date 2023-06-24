@@ -8,7 +8,7 @@ def main():
     if len(sys.argv) != 2:
         perror("Usage: make turns=<number>", -1)
 
-    game = Game(sys.argv[1])
+    game = Game(int(sys.argv[1]))
     while not game.finished():
         print(": ", end="")
         x = game.execute(input())

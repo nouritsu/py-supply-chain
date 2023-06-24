@@ -49,26 +49,41 @@ class Game:
         r = Result()
         c = Command(command)
 
-        if c.invalid and c.arg < 0:
+        if c.invalid and (not c.arg):
             r._set_err(
                 f"Invalid usage, usage of command '<name> [arg]' where arg is an integer."
             )
         else:
             match c.name:
                 case "order":
+                    if not c.arg:
+                        r._set_err(
+                            "Invalid usage, usage of command '<name> [arg]' where arg is an integer."
+                        )
+                        return r
                     r = self.current.place_order(c.arg)
 
                 case "fulfill":
+                    if not c.arg:
+                        r._set_err(
+                            "Invalid usage, usage of command '<name> [arg]' where arg is an integer."
+                        )
+                        return r
                     r = self.current.fulfill_order(c.arg)
 
                 case "produce":
+                    if not c.arg:
+                        r._set_err(
+                            "Invalid usage, usage of command '<name> [arg]' where arg is an integer."
+                        )
                     r = self.set_production(c.arg)
 
                 case "next":
                     self.__update()
                     self.current.update()
                     if self.finished():
-                        return Result()._set_err("Cannot end turn, game is over.")
+                        r._set_err("Cannot end turn, game is over.")
+                        return r
                     if self.current.next:
                         self.current = self.current.next
                     else:

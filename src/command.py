@@ -8,17 +8,17 @@ class Command:
         self.invalid = False
         if len(a) == 1:
             self.name = a[0]
-            self.arg = -1
+            self.arg = None
         elif len(a) == 2:
             self.name = a[0]
             try:
                 self.arg = int(a[1])
             except ValueError:
-                self.arg = -1
+                self.arg = None
                 self.invalid = True
         else:
             self.name = ""
-            self.arg = -1
+            self.arg = None
             self.invalid = True
 
     def __str__(self):
