@@ -2,13 +2,14 @@ from random import randint
 from constants import ORDER_ID_MIN, ORDER_ID_MAX, DELIVERY_TIME
 from result import Result
 from printer import perror, pwarning
+from collections import OrderedDict
 
 
 class Team:
     def __init__(self):
-        self.recieved_orders = {}
-        self.placed_orders = {}
-        self.fulfilled_orders = {}
+        self.recieved_orders = OrderedDict()
+        self.placed_orders = OrderedDict()
+        self.fulfilled_orders = OrderedDict()
         self.production = 1
         self.stock = 0
         self.round = 1
