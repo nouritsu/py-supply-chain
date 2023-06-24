@@ -32,6 +32,8 @@ def main(page: ft.Page):
         command = e.control.value
         result = GAME.execute(command)
         command_textfield.error_text = ""
+        command_textfield.value = ""
+        command_textfield.focus()
         print(command)
 
         if result.is_err():
