@@ -2,34 +2,35 @@ from random import randint
 from constants import ORDER_ID_MIN, ORDER_ID_MAX, DELIVERY_TIME
 from result import Result
 from printer import perror, pwarning
+from collections import OrderedDict
 
 
 class Team:
     def __init__(self):
-        self.recieved_orders = {}
-        self.placed_orders = {}
-        self.fulfilled_orders = {}
+        self.received_orders = OrderedDict()
+        self.placed_orders = OrderedDict()
+        self.fulfilled_orders = OrderedDict()
         self.production = 1
         self.stock = 0
         self.round = 1
 
     def place_order(self, count: int) -> Result:
         r = Result()
-        id = self.gen_id(self.placed_orders, self.next.recieved_orders)
+        id = self.gen_id(self.placed_orders, self.next.received_orders)
         self.placed_orders[id] = count
-        self.next.recieved_orders[id] = count
+        self.next.received_orders[id] = count
         r._set_ok(f"Placed order with number {id} for {count} items.")
         return r
 
     def fulfill_order(self, number: int) -> Result:
         r = Result()
-        if number in self.recieved_orders:
+        if number in self.received_orders:
             self.fulfilled_orders[number] = {
-                "count": self.recieved_orders[number],
+                "count": self.received_orders[number],
                 "week": self.round + DELIVERY_TIME,
             }
-            self.stock -= self.recieved_orders[number]
-            del self.recieved_orders[number]
+            self.stock -= self.received_orders[number]
+            del self.received_orders[number]
             r._set_ok(f"Fulfilled order number {number}")
         else:
             r._set_err(f"Cannot fulfill non existent order {number}")
@@ -65,7 +66,7 @@ class Team:
     def stats(self) -> dict:
         d = {}
         d["role"] = "unset"
-        d["recieved-orders"] = self.recieved_orders
+        d["received-orders"] = self.received_orders
         d["placed-orders"] = self.placed_orders
         d["fulfilled-orders"] = self.fulfilled_orders
         d["stock"] = self.stock
