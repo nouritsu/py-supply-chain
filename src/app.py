@@ -1,6 +1,9 @@
 import flet as ft
-import time
+from datetime import datetime
 from game import Game
+import matplotlib.pyplot as plt
+
+# TODO: can't fulfill order's from previous round
 
 def main(page: ft.Page):
     page.title = "Py Supply Chain"
@@ -25,6 +28,13 @@ def main(page: ft.Page):
         while len(str(num)) < length:
             num = f"0{num}"
         return str(num)
+    
+    def plot_stock(stock: dict[str, list[int]]):
+        for k, v in stock.items():
+            plt.plot(v, label=k)
+            plt.show()
+            # plt.savefig(f"{k}.png")
+        
 
     def command_submit(e: ft.ControlEvent):
         nonlocal GAME
@@ -36,12 +46,19 @@ def main(page: ft.Page):
         command_textfield.focus()
         print(command)
 
+        if GAME.finished():
+            print("Game finished")
+            plot_stock(GAME.weekly_stock)
+            page.window_close()
+
         if result.is_err():
             print(result.err())
             command_textfield.error_text = result.err()
 
             if result.err() == "Exit":
-                raise SystemExit from None
+                plot_stock(GAME.weekly_stock)
+                page.window_close()
+                # TODO: save matplotlib graph with exit string
             
         stats = GAME.current.stats()
         

@@ -76,7 +76,7 @@ class Game:
                         r._set_err(
                             "Invalid usage, usage of command '<name> [arg]' where arg is an integer."
                         )
-                    r = self.set_production(c.arg)
+                    r = self.current.set_production(c.arg)
 
                 case "next":
                     self.__update()
@@ -106,7 +106,7 @@ class Game:
 
     # Returns true if game is over (use in main loop condition)
     def finished(self):
-        return self.round == self.turns
+        return self.round == self.turns + 1
 
     # Get week by week stock count of each team, use after game end
     def get_stats(self):
